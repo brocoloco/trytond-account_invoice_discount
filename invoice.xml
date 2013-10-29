@@ -13,5 +13,21 @@
                 ref="account_invoice.invoice_line_view_tree_sequence"/>
             <field name="name">invoice_line_tree</field>
         </record>
+
+        <record model="ir.action.report" id="account_invoice.report_invoice">
+          <field name="active" eval="False"/>
+        </record>
+        <record model="ir.action.report" id="report_invoice">
+            <field name="name">Invoice</field>
+            <field name="model">account.invoice</field>
+            <field name="report_name">account.invoice</field>
+            <field name="report">account_invoice_discount/invoice.odt</field>
+            <field name="style">company/header_A4.odt</field>
+        </record>
+        <record model="ir.action.keyword" id="report_invoice_keyword">
+            <field name="keyword">form_print</field>
+            <field name="model">account.invoice,-1</field>
+            <field name="action" ref="report_invoice"/>
+        </record>
     </data>
 </tryton>
