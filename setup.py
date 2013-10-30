@@ -7,7 +7,7 @@ import os
 import ConfigParser
 
 MODULE = 'account_invoice_discount'
-PREFIX = 'nantic'
+PREFIX = 'trytonspain'
 MODULE2PREFIX = {}
 
 
@@ -39,11 +39,11 @@ tests_require = ['proteus >= %s.%s, < %s.%s' %
 
 setup(name='%s_%s' % (PREFIX, MODULE),
     version=info.get('version', '0.0.1'),
-    description='',
+    description='Account invoice and discount',
     long_description=read('README'),
     author='NaN·tic',
     url='http://www.nan-tic.com/',
-    download_url="https://bitbucket.org/nantic/trytond-%s" % MODULE,
+    download_url="https://bitbucket.org/trytonspain/trytond-%s" % MODULE,
     package_dir={'trytond.modules.%s' % MODULE: '.'},
     packages=[
         'trytond.modules.%s' % MODULE,
