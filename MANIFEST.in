@@ -10,3 +10,4 @@ include view/*.xml
 include locale/*.po
 include doc/*
 include tests/*.rst
+include *.odt
