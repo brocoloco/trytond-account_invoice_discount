@@ -202,7 +202,7 @@ Create invoice::
     >>> line.unit_price = Decimal(20)
     >>> line.discount = Decimal('0.2577')
     >>> line.gross_unit_price = Decimal('25.153')
-    >>> line.unit_price == Decimal('18.6711')
+    >>> line.unit_price == Decimal('18.67107190')
     True
     >>> line.amount == Decimal('18.67')
     True
