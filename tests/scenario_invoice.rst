@@ -200,6 +200,10 @@ Create invoice::
     >>> line.description = 'Test'
     >>> line.quantity = 1
     >>> line.unit_price = Decimal(20)
+    >>> line.discount = Decimal('1.0')
+    >>> line.gross_unit_price = Decimal('25.153')
+    >>> line.unit_price == Decimal('0.0')
+    True
     >>> line.discount = Decimal('0.2577')
     >>> line.gross_unit_price = Decimal('25.153')
     >>> line.unit_price == Decimal('18.67107190')
