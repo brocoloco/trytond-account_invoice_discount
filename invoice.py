@@ -40,11 +40,12 @@ class InvoiceLine:
         unit_price = None
         gross_unit_price = self.gross_unit_price
         if self.gross_unit_price is not None and self.discount is not None:
-            unit_price = self.gross_unit_price * (1-self.discount)
+            unit_price = self.gross_unit_price * (1 - self.discount)
             digits = self.__class__.unit_price.digits[1]
             unit_price = unit_price.quantize(Decimal(str(10.0 ** -digits)))
 
-            gross_unit_price = unit_price / (1-self.discount)
+            if (1 - self.discount) != 0:
+                gross_unit_price = unit_price / (1 - self.discount)
             digits = self.__class__.gross_unit_price.digits[1]
             gross_unit_price = gross_unit_price.quantize(
                 Decimal(str(10.0 ** -digits)))
@@ -63,6 +64,21 @@ class InvoiceLine:
         res = super(InvoiceLine, self).on_change_product()
         if 'unit_price' in res:
             self.gross_unit_price = res['unit_price']
-            self.discount
+            self.discount = Decimal(0)
             res.update(self.update_prices())
+        if not 'discount' in res:
+            res['discount'] = Decimal(0)
         return res
+
+    @classmethod
+    def create(cls, vlist):
+        vlist = [x.copy() for x in vlist]
+        for vals in vlist:
+            if not 'gross_unit_price' in vals:
+                unit_price = vals.get('unit_price')
+                if 'discount' in vals:
+                    unit_price = unit_price * (1 + vals.get('discount'))
+                vals['gross_unit_price'] = unit_price
+            if not 'discount' in vals:
+                vals['discount'] = Decimal(0)
+        return super(InvoiceLine, cls).create(vlist)
