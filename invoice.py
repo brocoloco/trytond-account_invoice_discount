@@ -2,6 +2,8 @@ from decimal import Decimal
 from trytond.model import fields
 from trytond.pool import PoolMeta
 from trytond.pyson import Eval
+from trytond.config import CONFIG
+DIGITS = int(CONFIG.get('unit_price_digits', 4))
 
 __all__ = ['InvoiceLine']
 __metaclass__ = PoolMeta
@@ -15,7 +17,7 @@ STATES = {
 class InvoiceLine:
     __name__ = 'account.invoice.line'
 
-    gross_unit_price = fields.Numeric('Gross Price', digits=(16, 4),
+    gross_unit_price = fields.Numeric('Gross Price', digits=(16, DIGITS),
         states=STATES, on_change=['gross_unit_price', 'discount'])
     discount = fields.Numeric('Discount', digits=(16, 4), states=STATES,
         on_change=['gross_unit_price', 'discount'])
@@ -24,7 +26,7 @@ class InvoiceLine:
     def __setup__(cls):
         super(InvoiceLine, cls).__setup__()
         cls.unit_price.states['readonly'] = True
-        cls.unit_price.digits = (20, 8)
+        cls.unit_price.digits = (20, DIGITS + 4)
         if not 'discount' in cls.product.on_change:
             cls.product.on_change.append('discount')
         if not 'discount' in cls.amount.on_change_with:
