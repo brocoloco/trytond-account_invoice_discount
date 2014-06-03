@@ -27,11 +27,11 @@ class InvoiceLine:
         super(InvoiceLine, cls).__setup__()
         cls.unit_price.states['readonly'] = True
         cls.unit_price.digits = (20, DIGITS + 4)
-        if not 'discount' in cls.product.on_change:
+        if 'discount' not in cls.product.on_change:
             cls.product.on_change.append('discount')
-        if not 'discount' in cls.amount.on_change_with:
+        if 'discount' not in cls.amount.on_change_with:
             cls.amount.on_change_with.append('discount')
-        if not 'gross_unit_price' in cls.amount.on_change_with:
+        if 'gross_unit_price' not in cls.amount.on_change_with:
             cls.amount.on_change_with.append('gross_unit_price')
 
     @staticmethod
@@ -46,7 +46,7 @@ class InvoiceLine:
             digits = self.__class__.unit_price.digits[1]
             unit_price = unit_price.quantize(Decimal(str(10.0 ** -digits)))
 
-            if (1 - self.discount) != 0:
+            if self.discount != 1:
                 gross_unit_price = unit_price / (1 - self.discount)
             digits = self.__class__.gross_unit_price.digits[1]
             gross_unit_price = gross_unit_price.quantize(
@@ -68,7 +68,7 @@ class InvoiceLine:
             self.gross_unit_price = res['unit_price']
             self.discount = Decimal(0)
             res.update(self.update_prices())
-        if not 'discount' in res:
+        if 'discount' not in res:
             res['discount'] = Decimal(0)
         return res
 
@@ -76,11 +76,16 @@ class InvoiceLine:
     def create(cls, vlist):
         vlist = [x.copy() for x in vlist]
         for vals in vlist:
-            if not 'gross_unit_price' in vals:
-                unit_price = vals.get('unit_price')
-                if 'discount' in vals:
-                    unit_price = unit_price * (1 + vals.get('discount'))
-                vals['gross_unit_price'] = unit_price
-            if not 'discount' in vals:
+            if 'gross_unit_price' not in vals:
+                gross_unit_price = vals.get('unit_price', Decimal('0.0'))
+                if 'discount' in vals and vals['discount'] != 1:
+                    gross_unit_price = (gross_unit_price
+                        / (1 - vals['discount']))
+
+                    digits = cls.unit_price.digits[1]
+                    gross_unit_price = gross_unit_price.quantize(
+                        Decimal(str(10.0 ** -digits)))
+                vals['gross_unit_price'] = gross_unit_price
+            if 'discount' not in vals:
                 vals['discount'] = Decimal(0)
         return super(InvoiceLine, cls).create(vlist)
