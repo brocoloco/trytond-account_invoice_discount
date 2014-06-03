@@ -183,33 +183,50 @@ Create invoice::
     >>> invoice = Invoice()
     >>> invoice.party = party
     >>> invoice.payment_term = payment_term
-    >>> line = InvoiceLine()
-    >>> invoice.lines.append(line)
-    >>> line.product = product
-    >>> line.gross_unit_price == Decimal(20)
-    True
-    >>> line.quantity = 5
-    >>> line.discount = Decimal('0.12')
-    >>> line.unit_price == Decimal('17.60')
-    True
-    >>> line.amount == Decimal(88)
-    True
+
+Add line defining Gross Unit Price and Discount (Unit Price is calculated)::
+
     >>> line = InvoiceLine()
     >>> invoice.lines.append(line)
     >>> line.account = revenue
     >>> line.description = 'Test'
     >>> line.quantity = 1
-    >>> line.unit_price = Decimal(20)
-    >>> line.discount = Decimal('1.0')
-    >>> line.gross_unit_price = Decimal('25.153')
-    >>> line.unit_price == Decimal('0.0')
-    True
     >>> line.discount = Decimal('0.2577')
     >>> line.gross_unit_price = Decimal('25.153')
-    >>> line.unit_price == Decimal('18.67107190')
+    >>> line.unit_price
+    Decimal('18.67107190')
+    >>> line.amount
+    Decimal('18.67')
+
+Add line defining Unit Price and Discount, Gross Unit Price is calculated::
+
+    >>> line = InvoiceLine()
+    >>> invoice.lines.append(line)
+    >>> line.product = product
+    >>> line.quantity = 5
+    >>> line.unit_price = Decimal('17.60')
+    >>> line.discount = Decimal('0.12')
+    >>> line.gross_unit_price
+    Decimal('20.0000')
+    >>> line.amount == Decimal(88)
     True
-    >>> line.amount == Decimal('18.67')
+
+Add line defining a discount of 100%. Despite of the List Price of product,
+after set the Discount the Unit Price is recomputed to 0.::
+
+    >>> line = InvoiceLine()
+    >>> invoice.lines.append(line)
+    >>> line.product = product
+    >>> line.quantity = 2
+    >>> line.unit_price
+    Decimal('20.00000000')
+    >>> line.gross_unit_price = Decimal('25.153')
+    >>> line.discount = Decimal('1.0')
+    >>> line.unit_price == Decimal('0.0')
     True
+
+Check invoice totals::
+
     >>> invoice.untaxed_amount == Decimal('106.67')
     True
     >>> invoice.tax_amount == Decimal('8.8')
@@ -217,6 +234,9 @@ Create invoice::
     >>> invoice.total_amount == Decimal('115.47')
     True
     >>> invoice.save()
+
+Post invoice and check again invoice totals and taxes::
+
     >>> Invoice.post([invoice.id], config.context)
     >>> invoice.reload()
     >>> invoice.state
