@@ -4,6 +4,7 @@ from trytond.pool import PoolMeta
 from trytond.pyson import Eval
 from trytond.config import CONFIG
 DIGITS = int(CONFIG.get('unit_price_digits', 4))
+DISCOUNT_DIGITS = int(CONFIG.get('discount_digits', 4))
 
 __all__ = ['InvoiceLine']
 __metaclass__ = PoolMeta
@@ -19,14 +20,14 @@ class InvoiceLine:
 
     gross_unit_price = fields.Numeric('Gross Price', digits=(16, DIGITS),
         states=STATES, on_change=['gross_unit_price', 'discount'])
-    discount = fields.Numeric('Discount', digits=(16, 4), states=STATES,
-        on_change=['gross_unit_price', 'discount'])
+    discount = fields.Numeric('Discount', digits=(16, DISCOUNT_DIGITS),
+        states=STATES, on_change=['gross_unit_price', 'discount'])
 
     @classmethod
     def __setup__(cls):
         super(InvoiceLine, cls).__setup__()
         cls.unit_price.states['readonly'] = True
-        cls.unit_price.digits = (20, DIGITS + 4)
+        cls.unit_price.digits = (20, DIGITS + DISCOUNT_DIGITS)
         if 'discount' not in cls.product.on_change:
             cls.product.on_change.append('discount')
         if 'discount' not in cls.amount.on_change_with:
