@@ -2,15 +2,14 @@
 Facturación. Descuentos en las líneas de las facturas
 =====================================================
 
-En las líneas de la factura podemos añadir un valor fijo para aplicar un descuento.
+Permite realizar descuentos en las líneas de la factura.
 
-El descuento se aplica en el campo "Precio unidad" a partir del descuento y el
-campo "Precio bruto".
+A partir del "Descuento" y el "Precio unidad bruto" se calcula el campo "Precio unidad" como:
 
-Precio = Precio bruto - descuento
+Precio unidad = Precio unidad bruto * (1 - Descuento)
 
-Por defecto el número de dígitos del descuento son 4 dígitos. Si desea usar más
-número de dígitos en el descuento, en el fichero de configuración de trytond,
-puede definir la variable "unit_price_digits" y el número de dígitos. Por ejemplo:
+Por defecto el número de decimales del "Precio unidad bruto" y el "Descuento" es 4. El número de decimales del "Precio unidad" es la suma de ambos, por defecto 8.
+Si desea cambiar el número de decimales del "Precio unidad bruto" y/o el "Descuento", por ejemplo 3 y 2 respectivamente, puede definir las siguientes variables en el fichero de configuración de trytond:
 
-unit_price_digits = 8
+unit_price_digits = 3
+discount_digits = 2
