@@ -79,9 +79,7 @@ class InvoiceLine:
         for vals in vlist:
             gross_unit_price = vals.get('unit_price', Decimal('0.0'))
             if 'discount' in vals and vals['discount'] != 1:
-                gross_unit_price = (gross_unit_price
-                    / (1 - vals['discount']))
-
+                gross_unit_price = (gross_unit_price / (1 - vals['discount']))
                 digits = cls.gross_unit_price.digits[1]
                 gross_unit_price = gross_unit_price.quantize(
                     Decimal(str(10.0 ** -digits)))
