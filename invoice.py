@@ -90,3 +90,9 @@ class InvoiceLine:
             if 'discount' not in vals:
                 vals['discount'] = Decimal(0)
         return super(InvoiceLine, cls).create(vlist)
+
+    def _credit(self):
+        res = super(InvoiceLine, self)._credit()
+        for field in ('gross_unit_price', 'discount'):
+            res[field] = getattr(self, field)
+        return res
