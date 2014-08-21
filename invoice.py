@@ -20,6 +20,8 @@ class InvoiceLine:
 
     gross_unit_price = fields.Numeric('Gross Price', digits=(16, DIGITS),
         states=STATES)
+    gross_unit_price_wo_round = fields.Numeric('Gross Price without rounding',
+        digits=(16, DIGITS + DISCOUNT_DIGITS), readonly=True)
     discount = fields.Numeric('Discount', digits=(16, DISCOUNT_DIGITS),
         states=STATES)
 
@@ -39,19 +41,20 @@ class InvoiceLine:
 
     def update_prices(self):
         unit_price = None
-        gross_unit_price = self.gross_unit_price
+        gross_unit_price = gross_unit_price_wo_round = self.gross_unit_price
         if self.gross_unit_price is not None and self.discount is not None:
             unit_price = self.gross_unit_price * (1 - self.discount)
             digits = self.__class__.unit_price.digits[1]
             unit_price = unit_price.quantize(Decimal(str(10.0 ** -digits)))
 
             if self.discount != 1:
-                gross_unit_price = unit_price / (1 - self.discount)
+                gross_unit_price_wo_round = unit_price / (1 - self.discount)
             digits = self.__class__.gross_unit_price.digits[1]
-            gross_unit_price = gross_unit_price.quantize(
+            gross_unit_price = gross_unit_price_wo_round.quantize(
                 Decimal(str(10.0 ** -digits)))
         return {
             'gross_unit_price': gross_unit_price,
+            'gross_unit_price_wo_round': gross_unit_price_wo_round,
             'unit_price': unit_price,
             }
 
