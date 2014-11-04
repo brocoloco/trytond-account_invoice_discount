@@ -2,9 +2,9 @@ from decimal import Decimal
 from trytond.model import fields
 from trytond.pool import PoolMeta
 from trytond.pyson import Eval
-from trytond.config import CONFIG
-DIGITS = int(CONFIG.get('unit_price_digits', 4))
-DISCOUNT_DIGITS = int(CONFIG.get('discount_digits', 4))
+from trytond.config import config
+DIGITS = int(config.get('digits', 'unit_price_digits', 4))
+DISCOUNT_DIGITS = int(config.get('digits', 'discount_digits', 4))
 
 __all__ = ['InvoiceLine']
 __metaclass__ = PoolMeta
