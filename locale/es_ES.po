@@ -9,3 +9,7 @@ msgstr "Descuento"
 msgctxt "field:account.invoice.line,gross_unit_price:"
 msgid "Gross Price"
 msgstr "Precio bruto"
+
+msgctxt "odt:account.invoice:"
+msgid "Discount"
+msgstr "Descuento"

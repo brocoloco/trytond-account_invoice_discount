@@ -5,7 +5,7 @@
         <field name="gross_unit_price"/>
         <label name="discount"/>
         <group col="2" id="discount">
-            <field name="discount" factor="100"/>
+            <field name="discount" factor="100" xexpand="0" xfill="0"/>
             <label name="discount" string="%" xalign="0.0" xexpand="1" xfill="1"/>
         </group>
     </xpath>
