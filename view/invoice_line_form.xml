@@ -3,10 +3,13 @@
         position="before">
         <label name="gross_unit_price"/>
         <field name="gross_unit_price"/>
-        <label name="discount"/>
-        <group col="2" id="discount">
+        <group id="discount" colspan="2" col="6">
+            <label name="discount"/>
             <field name="discount" factor="100" xexpand="0" xfill="0"/>
             <label name="discount" string="%" xalign="0.0" xexpand="1" xfill="1"/>
+            <label name="invoice_discount"/>
+            <field name="invoice_discount" factor="100" xexpand="0" xfill="0"/>
+            <label name="invoice_discount" string="%" xalign="0.0" xexpand="1" xfill="1"/>
         </group>
     </xpath>
 </data>

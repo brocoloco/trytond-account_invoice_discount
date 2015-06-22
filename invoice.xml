@@ -21,5 +21,23 @@
             <field name="report">account_invoice_discount/invoice.odt</field>
             <field name="style">company/header_A4.odt</field>
         </record>
+
+        <!-- account.invoice.apply_invoice_discount -->
+        <record model="ir.ui.view" id="apply_invoice_discount_start_view_form">
+            <field name="model">account.invoice.apply_invoice_discount.start</field>
+            <field name="type">form</field>
+            <field name="name">apply_invoice_discount_start_form</field>
+        </record>
+
+        <record model="ir.action.wizard" id="wizard_apply_invoice_discount">
+            <field name="name">Apply Invoice Discount</field>
+            <field name="wiz_name">account.invoice.apply_invoice_discount</field>
+            <field name="model">account.invoice</field>
+        </record>
+        <record model="ir.action.keyword" id="act_wizard_apply_invoice_discount_keyword">
+            <field name="keyword">form_action</field>
+            <field name="model">account.invoice,-1</field>
+            <field name="action" ref="wizard_apply_invoice_discount"/>
+        </record>
     </data>
 </tryton>
