@@ -2,22 +2,6 @@
 msgid ""
 msgstr "Content-Type: text/plain; charset=utf-8\n"
 
-msgctxt "error:account.invoice.apply_invoice_discount:"
-msgid ""
-"You cannot change the applied discount to invoice \"%s\" because it isn't in"
-" Draft state."
-msgstr ""
-"No pot canviar el descompte aplicat a la factura \"%s\" perquè no està en "
-"estat borrador."
-
-msgctxt "field:account.invoice.apply_invoice_discount.start,discount:"
-msgid "Invoice's Global Discount"
-msgstr "Descompte global per factura"
-
-msgctxt "field:account.invoice.apply_invoice_discount.start,id:"
-msgid "ID"
-msgstr "Identificador"
-
 msgctxt "field:account.invoice.line,discount:"
 msgid "Discount"
 msgstr "Descompte"
@@ -26,43 +10,6 @@ msgctxt "field:account.invoice.line,gross_unit_price:"
 msgid "Gross Price"
 msgstr "Preu brut"
 
-msgctxt "field:account.invoice.line,gross_unit_price_wo_round:"
-msgid "Gross Price without rounding"
-msgstr "Preu brut sense arrodoniment"
-
-msgctxt "field:account.invoice.line,invoice_discount:"
-msgid "Invoice Discount"
-msgstr "Descompte per factura"
-
-msgctxt "model:account.invoice.apply_invoice_discount.start,name:"
-msgid "Apply Invoice Discount"
-msgstr "Aplica descompte per factura"
-
-msgctxt "model:ir.action,name:wizard_apply_invoice_discount"
-msgid "Apply Invoice Discount"
-msgstr "Aplica descompte per factura"
-
 msgctxt "odt:account.invoice:"
 msgid "Discount"
 msgstr "Descompte"
-
-msgctxt "view:account.invoice.apply_invoice_discount.start:"
-msgid "%"
-msgstr "%"
-
-msgctxt "view:account.invoice.apply_invoice_discount.start:"
-msgid "Apply Invoice Discount"
-msgstr "Aplica descompte per factura"
-
-msgctxt "view:account.invoice.line:"
-msgid "%"
-msgstr "%"
-
-msgctxt ""
-"wizard_button:account.invoice.apply_invoice_discount,start,apply_discount:"
-msgid "Apply"
-msgstr "Aplica"
-
-msgctxt "wizard_button:account.invoice.apply_invoice_discount,start,end:"
-msgid "Cancel"
-msgstr "Cancel·la"

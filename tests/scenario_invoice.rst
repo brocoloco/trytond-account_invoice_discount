@@ -208,8 +208,8 @@ Add line defining Unit Price and Discount, Gross Unit Price is calculated::
     >>> line.discount = Decimal('0.12')
     >>> line.gross_unit_price
     Decimal('20.0000')
-    >>> line.amount
-    Decimal('88.00')
+    >>> line.amount == Decimal(88)
+    True
 
 Add line defining a discount of 100%. Despite of the List Price of product,
 after set the Discount the Unit Price is recomputed to 0.::
@@ -222,96 +222,18 @@ after set the Discount the Unit Price is recomputed to 0.::
     Decimal('20.00000000')
     >>> line.gross_unit_price = Decimal('25.153')
     >>> line.discount = Decimal('1.0')
-    >>> line.unit_price == Decimal('0.00')
+    >>> line.unit_price == Decimal('0.0')
     True
-    >>> line.amount
-    Decimal('0.00')
 
 Check invoice totals::
 
-    >>> invoice.untaxed_amount
-    Decimal('106.67')
-    >>> invoice.tax_amount
-    Decimal('8.80')
-    >>> invoice.total_amount
-    Decimal('115.47')
+    >>> invoice.untaxed_amount == Decimal('106.67')
+    True
+    >>> invoice.tax_amount == Decimal('8.8')
+    True
+    >>> invoice.total_amount == Decimal('115.47')
+    True
     >>> invoice.save()
-    >>> lines_by_qty = {int(l.quantity): l for l in invoice.lines}
-    >>> lines_by_qty[1].amount
-    Decimal('18.67')
-    >>> lines_by_qty[5].amount
-    Decimal('88.00')
-    >>> lines_by_qty[2].amount
-    Decimal('0.00')
-
-Applying global invoice discount::
-
-    >>> invoice_discount = Wizard('account.invoice.apply_invoice_discount',
-    ...     [invoice])
-    >>> invoice_discount.form.discount = Decimal('0.15')
-    >>> invoice_discount.execute('apply_discount')
-    >>> invoice.reload()
-    >>> invoice.untaxed_amount
-    Decimal('90.67')
-    >>> invoice.tax_amount
-    Decimal('7.48')
-    >>> invoice.total_amount
-    Decimal('98.15')
-    >>> lines_by_qty[1].reload()
-    >>> lines_by_qty[1].amount
-    Decimal('15.87')
-    >>> lines_by_qty[5].reload()
-    >>> lines_by_qty[5].amount
-    Decimal('74.80')
-    >>> lines_by_qty[2].reload()
-    >>> lines_by_qty[2].amount
-    Decimal('0.00')
-
-Remove global invoice discount::
-
-    >>> invoice_discount = Wizard('account.invoice.apply_invoice_discount',
-    ...     [invoice])
-    >>> invoice_discount.form.discount = Decimal(0)
-    >>> invoice_discount.execute('apply_discount')
-    >>> invoice.reload()
-    >>> invoice.untaxed_amount
-    Decimal('106.67')
-    >>> invoice.tax_amount
-    Decimal('8.80')
-    >>> invoice.total_amount
-    Decimal('115.47')
-    >>> lines_by_qty[1].reload()
-    >>> lines_by_qty[1].amount
-    Decimal('18.67')
-    >>> lines_by_qty[5].reload()
-    >>> lines_by_qty[5].amount
-    Decimal('88.00')
-    >>> lines_by_qty[2].reload()
-    >>> lines_by_qty[2].amount
-    Decimal('0.00')
-
-Applying global invoice discount::
-
-    >>> invoice_discount = Wizard('account.invoice.apply_invoice_discount',
-    ...     [invoice])
-    >>> invoice_discount.form.discount = Decimal('0.10')
-    >>> invoice_discount.execute('apply_discount')
-    >>> invoice.reload()
-    >>> invoice.untaxed_amount
-    Decimal('96.00')
-    >>> invoice.tax_amount
-    Decimal('7.92')
-    >>> invoice.total_amount
-    Decimal('103.92')
-    >>> lines_by_qty[1].reload()
-    >>> lines_by_qty[1].amount
-    Decimal('16.80')
-    >>> lines_by_qty[5].reload()
-    >>> lines_by_qty[5].amount
-    Decimal('79.20')
-    >>> lines_by_qty[2].reload()
-    >>> lines_by_qty[2].amount
-    Decimal('0.00')
 
 Post invoice and check again invoice totals and taxes::
 
@@ -319,36 +241,33 @@ Post invoice and check again invoice totals and taxes::
     >>> invoice.reload()
     >>> invoice.state
     u'posted'
-    >>> invoice.untaxed_amount
-    Decimal('96.00')
-    >>> invoice.tax_amount
-    Decimal('7.92')
-    >>> invoice.total_amount
-    Decimal('103.92')
+    >>> invoice.untaxed_amount == Decimal('106.67')
+    True
+    >>> invoice.tax_amount == Decimal('8.8')
+    True
+    >>> invoice.total_amount == Decimal('115.47')
+    True
     >>> receivable.reload()
-    >>> receivable.debit
-    Decimal('103.92')
-    >>> receivable.credit
-    Decimal('0.00')
+    >>> (receivable.debit, receivable.credit) == \
+    ... (Decimal('115.47'), Decimal(0))
+    True
     >>> revenue.reload()
-    >>> revenue.debit
-    Decimal('0.00')
-    >>> revenue.credit
-    Decimal('96.00')
+    >>> (revenue.debit, revenue.credit) == \
+    ... (Decimal(0), Decimal('106.67'))
+    True
     >>> account_tax.reload()
-    >>> account_tax.debit
-    Decimal('0.00')
-    >>> account_tax.credit
-    Decimal('7.92')
+    >>> (account_tax.debit, account_tax.credit) == \
+    ... (Decimal(0), Decimal('8.8'))
+    True
     >>> invoice_base_code.reload()
-    >>> invoice_base_code.sum
-    Decimal('79.20')
+    >>> invoice_base_code.sum == Decimal(88)
+    True
     >>> invoice_tax_code.reload()
-    >>> invoice_tax_code.sum
-    Decimal('7.92')
+    >>> invoice_tax_code.sum == Decimal('8.8')
+    True
     >>> credit_note_base_code.reload()
-    >>> credit_note_base_code.sum
-    Decimal('0.00')
+    >>> credit_note_base_code.sum == Decimal(0)
+    True
     >>> credit_note_tax_code.reload()
-    >>> credit_note_tax_code.sum
-    Decimal('0.00')
+    >>> credit_note_tax_code.sum == Decimal(0)
+    True
