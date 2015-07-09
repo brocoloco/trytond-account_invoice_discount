@@ -13,17 +13,18 @@ STATES = {
     'invisible': Eval('type') != 'line',
     'required': Eval('type') == 'line',
     }
+DEPENDS = ['type']
 
 
 class InvoiceLine:
     __name__ = 'account.invoice.line'
 
     gross_unit_price = fields.Numeric('Gross Price', digits=(16, DIGITS),
-        states=STATES)
+        states=STATES, depends=DEPENDS)
     gross_unit_price_wo_round = fields.Numeric('Gross Price without rounding',
         digits=(16, DIGITS + DISCOUNT_DIGITS), readonly=True)
     discount = fields.Numeric('Discount', digits=(16, DISCOUNT_DIGITS),
-        states=STATES)
+        states=STATES, depends=DEPENDS)
 
     @classmethod
     def __setup__(cls):
