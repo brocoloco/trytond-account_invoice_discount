@@ -43,6 +43,7 @@ class InvoiceLine:
     def update_prices(self):
         unit_price = None
         gross_unit_price = gross_unit_price_wo_round = self.gross_unit_price
+
         if self.gross_unit_price is not None and self.discount is not None:
             unit_price = self.gross_unit_price * (1 - self.discount)
             digits = self.__class__.unit_price.digits[1]
@@ -53,11 +54,10 @@ class InvoiceLine:
             digits = self.__class__.gross_unit_price.digits[1]
             gross_unit_price = gross_unit_price_wo_round.quantize(
                 Decimal(str(10.0 ** -digits)))
-        return {
-            'gross_unit_price': gross_unit_price,
-            'gross_unit_price_wo_round': gross_unit_price_wo_round,
-            'unit_price': unit_price,
-            }
+
+        self.gross_unit_price = gross_unit_price
+        self.gross_unit_price_wo_round = gross_unit_price_wo_round
+        self.unit_price = unit_price
 
     @fields.depends('gross_unit_price', 'discount')
     def on_change_gross_unit_price(self):
@@ -67,16 +67,15 @@ class InvoiceLine:
     def on_change_discount(self):
         return self.update_prices()
 
-    @fields.depends('gross_unit_price', 'discount')
+    @fields.depends('gross_unit_price', 'unit_price', 'discount')
     def on_change_product(self):
-        res = super(InvoiceLine, self).on_change_product()
-        if 'unit_price' in res:
-            self.gross_unit_price = res['unit_price']
+        super(InvoiceLine, self).on_change_product()
+        if self.unit_price:
+            self.gross_unit_price = self.unit_price
             self.discount = Decimal(0)
-            res.update(self.update_prices())
-        if 'discount' not in res:
-            res['discount'] = Decimal(0)
-        return res
+            self.update_prices()
+        if not self.discount:
+            self.discount = Decimal(0)
 
     @classmethod
     def create(cls, vlist):
