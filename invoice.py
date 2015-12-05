@@ -3,6 +3,7 @@ from trytond.model import fields
 from trytond.pool import PoolMeta
 from trytond.pyson import Eval
 from trytond.config import config as config_
+from trytond.modules.product import price_digits
 
 __all__ = ['InvoiceLine']
 __metaclass__ = PoolMeta
@@ -12,17 +13,16 @@ STATES = {
     'required': Eval('type') == 'line',
     }
 DEPENDS = ['type']
-DIGITS = config_.getint('product', 'price_decimal', default=4)
 DISCOUNT_DIGITS = config_.getint('product', 'discount_decimal', default=4)
 
 
 class InvoiceLine:
     __name__ = 'account.invoice.line'
 
-    gross_unit_price = fields.Numeric('Gross Price', digits=(16, DIGITS),
+    gross_unit_price = fields.Numeric('Gross Price', digits=price_digits,
         states=STATES, depends=DEPENDS)
     gross_unit_price_wo_round = fields.Numeric('Gross Price without rounding',
-        digits=(16, DIGITS + DISCOUNT_DIGITS), readonly=True)
+        digits=(16, price_digits[1] + DISCOUNT_DIGITS), readonly=True)
     discount = fields.Numeric('Discount', digits=(16, DISCOUNT_DIGITS),
         states=STATES, depends=DEPENDS)
 
@@ -30,7 +30,7 @@ class InvoiceLine:
     def __setup__(cls):
         super(InvoiceLine, cls).__setup__()
         cls.unit_price.states['readonly'] = True
-        cls.unit_price.digits = (20, DIGITS + DISCOUNT_DIGITS)
+        cls.unit_price.digits = (20, price_digits[1] + DISCOUNT_DIGITS)
         if 'discount' not in cls.amount.on_change_with:
             cls.amount.on_change_with.add('discount')
         if 'gross_unit_price' not in cls.amount.on_change_with:
