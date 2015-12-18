@@ -41,7 +41,8 @@ class InvoiceLine:
         return Decimal(0)
 
     def update_prices(self):
-        unit_price = None
+        unit_price = self.unit_price
+        digits = self.__class__.gross_unit_price.digits[1]
         gross_unit_price = gross_unit_price_wo_round = self.gross_unit_price
 
         if self.gross_unit_price is not None and self.discount is not None:
@@ -51,7 +52,10 @@ class InvoiceLine:
 
             if self.discount != 1:
                 gross_unit_price_wo_round = unit_price / (1 - self.discount)
-            digits = self.__class__.gross_unit_price.digits[1]
+            gross_unit_price = gross_unit_price_wo_round.quantize(
+                Decimal(str(10.0 ** -digits)))
+        elif self.unit_price and self.discount:
+            gross_unit_price_wo_round = self.unit_price / (1 - self.discount)
             gross_unit_price = gross_unit_price_wo_round.quantize(
                 Decimal(str(10.0 ** -digits)))
 
@@ -59,11 +63,11 @@ class InvoiceLine:
         self.gross_unit_price_wo_round = gross_unit_price_wo_round
         self.unit_price = unit_price
 
-    @fields.depends('gross_unit_price', 'discount')
+    @fields.depends('gross_unit_price', 'discount', 'unit_price')
     def on_change_gross_unit_price(self):
         return self.update_prices()
 
-    @fields.depends('gross_unit_price', 'discount')
+    @fields.depends('gross_unit_price', 'discount', 'unit_price')
     def on_change_discount(self):
         return self.update_prices()
 
