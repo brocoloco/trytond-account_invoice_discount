@@ -54,11 +54,16 @@ Create chart of accounts::
     >>> receivable = accounts['receivable']
     >>> revenue = accounts['revenue']
     >>> expense = accounts['expense']
+    >>> account_tax = accounts['tax']
 
 Create tax::
 
     >>> tax = set_tax_code(create_tax(Decimal('.10')))
     >>> tax.save()
+    >>> invoice_base_code = tax.invoice_base_code
+    >>> invoice_tax_code = tax.invoice_tax_code
+    >>> credit_note_base_code = tax.credit_note_base_code
+    >>> credit_note_tax_code = tax.credit_note_tax_code
 
 Create party::
 
@@ -128,8 +133,8 @@ Add line defining Unit Price and Discount, Gross Unit Price is calculated::
     >>> line.discount = Decimal('0.12')
     >>> line.gross_unit_price
     Decimal('20.0000')
-    >>> line.amount == Decimal(88)
-    True
+    >>> line.amount
+    Decimal('88.00')
 
 Add line defining a discount of 100%. Despite of the List Price of product,
 after set the Discount the Unit Price is recomputed to 0.::
@@ -138,56 +143,50 @@ after set the Discount the Unit Price is recomputed to 0.::
     >>> invoice.lines.append(line)
     >>> line.product = product
     >>> line.quantity = 2
-    >>> line.unit_price
-    Decimal('20.00000000')
+    >>> line.unit_price = Decimal('20.00000000')
     >>> line.gross_unit_price = Decimal('25.153')
     >>> line.discount = Decimal('1.0')
-    >>> line.unit_price == Decimal('0.0')
-    True
+    >>> line.unit_price
+    Decimal('0E-8')
 
 Check invoice totals::
 
-    >>> invoice.untaxed_amount == Decimal('106.67')
-    True
-    >>> invoice.tax_amount == Decimal('8.8')
-    True
-    >>> invoice.total_amount == Decimal('115.47')
-    True
-    >>> invoice.save()
+    >>> invoice.untaxed_amount
+    Decimal('106.67')
+    >>> invoice.tax_amount
+    Decimal('8.80')
+    >>> invoice.total_amount
+    Decimal('115.47')
 
 Post invoice and check again invoice totals and taxes::
 
-    >>> Invoice.post([invoice.id], config.context)
-    >>> invoice.reload()
+    >>> invoice.click('post')
     >>> invoice.state
     u'posted'
-    >>> invoice.untaxed_amount == Decimal('106.67')
-    True
-    >>> invoice.tax_amount == Decimal('8.8')
-    True
-    >>> invoice.total_amount == Decimal('115.47')
-    True
+    >>> invoice.untaxed_amount
+    Decimal('106.67')
+    >>> invoice.tax_amount
+    Decimal('8.80')
+    >>> invoice.total_amount
+    Decimal('115.47')
     >>> receivable.reload()
-    >>> (receivable.debit, receivable.credit) == \
-    ... (Decimal('115.47'), Decimal(0))
-    True
+    >>> (receivable.debit, receivable.credit)
+    (Decimal('115.47'), Decimal('0.00'))
     >>> revenue.reload()
-    >>> (revenue.debit, revenue.credit) == \
-    ... (Decimal(0), Decimal('106.67'))
-    True
+    >>> (revenue.debit, revenue.credit)
+    (Decimal('0.00'), Decimal('106.67'))
     >>> account_tax.reload()
-    >>> (account_tax.debit, account_tax.credit) == \
-    ... (Decimal(0), Decimal('8.8'))
-    True
+    >>> (account_tax.debit, account_tax.credit)
+    (Decimal('0.00'), Decimal('8.80'))
     >>> invoice_base_code.reload()
-    >>> invoice_base_code.sum == Decimal(88)
-    True
+    >>> invoice_base_code.sum
+    Decimal('88.00')
     >>> invoice_tax_code.reload()
-    >>> invoice_tax_code.sum == Decimal('8.8')
-    True
+    >>> invoice_tax_code.sum
+    Decimal('8.80')
     >>> credit_note_base_code.reload()
-    >>> credit_note_base_code.sum == Decimal(0)
-    True
+    >>> credit_note_base_code.sum
+    Decimal('0.00')
     >>> credit_note_tax_code.reload()
-    >>> credit_note_tax_code.sum == Decimal(0)
-    True
+    >>> credit_note_tax_code.sum
+    Decimal('0.00')
