@@ -59,9 +59,10 @@ class InvoiceLine:
             gross_unit_price = gross_unit_price_wo_round.quantize(
                 Decimal(str(10.0 ** -digits)))
 
-        digits = self.__class__.gross_unit_price_wo_round.digits[1]
-        gross_unit_price_wo_round = gross_unit_price_wo_round.quantize(
-            Decimal(str(10.0 ** -digits)))
+        if gross_unit_price_wo_round:
+            digits = self.__class__.gross_unit_price_wo_round.digits[1]
+            gross_unit_price_wo_round = gross_unit_price_wo_round.quantize(
+                Decimal(str(10.0 ** -digits)))
 
         self.gross_unit_price = gross_unit_price
         self.gross_unit_price_wo_round = gross_unit_price_wo_round
