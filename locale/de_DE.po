@@ -14,6 +14,6 @@ msgctxt "model:ir.action,name:report_invoice"
 msgid "Invoice"
 msgstr "Rechnung"
 
-msgctxt "odt:account.invoice:"
+msgctxt "report:account.invoice:"
 msgid "Discount"
 msgstr "Rabatt"
