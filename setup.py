@@ -20,6 +20,7 @@ def read(fname):
         os.path.join(os.path.dirname(__file__), fname),
         'r', encoding='utf-8').read()
 
+
 def get_require_version(name):
     if minor_version % 2:
         require = '%s >= %s.%s.dev0, < %s.%s'
@@ -40,7 +41,8 @@ major_version, minor_version, _ = version.split('.', 2)
 major_version = int(major_version)
 minor_version = int(minor_version)
 name = 'trytonspain_account_invoice_discount'
-download_url = 'https://bitbucket.org/trytonspain/trytond-account_invoice_discount'
+download_url = \
+    'https://bitbucket.org/trytonspain/trytond-account_invoice_discount'
 
 requires = []
 for dep in info.get('depends', []):
