@@ -10,8 +10,9 @@ __all__ = ['InvoiceLine', 'discount_digits']
 STATES = {
     'invisible': Eval('type') != 'line',
     'required': Eval('type') == 'line',
+    'readonly': Eval('invoice_state') != 'draft',
     }
-DEPENDS = ['type']
+DEPENDS = ['type', 'invoice_state']
 discount_digits = (16, config_.getint('product', 'discount_decimal',
     default=4))
 
