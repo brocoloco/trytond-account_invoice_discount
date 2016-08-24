@@ -96,9 +96,9 @@ class InvoiceLine:
                 or Decimal('0.0'))
             if 'discount' in vals and vals['discount'] != 1:
                 gross_unit_price = gross_unit_price / (1 - vals['discount'])
-                digits = cls.gross_unit_price.digits[1]
-                gross_unit_price = gross_unit_price.quantize(
-                    Decimal(str(10.0 ** -digits)))
+            digits = cls.gross_unit_price.digits[1]
+            gross_unit_price = gross_unit_price.quantize(
+                Decimal(str(10.0 ** -digits)))
             vals['gross_unit_price'] = gross_unit_price
             if 'discount' not in vals:
                 vals['discount'] = Decimal(0)
