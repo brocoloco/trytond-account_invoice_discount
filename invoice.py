@@ -101,7 +101,7 @@ class InvoiceLine:
             gross_unit_price = gross_unit_price.quantize(
                 Decimal(str(10.0 ** -digits)))
             vals['gross_unit_price'] = gross_unit_price
-            if 'discount' not in vals:
+            if not vals.get('discount'):
                 vals['discount'] = Decimal(0)
         return super(InvoiceLine, cls).create(vlist)
 
