@@ -135,6 +135,7 @@ after set the Discount the Unit Price is recomputed to 0.::
     >>> line.discount = Decimal('1.0')
     >>> line.unit_price
     Decimal('0E-8')
+    >>> line.gross_unit_price = Decimal('25.153')
 
 Check invoice totals::
 
@@ -177,3 +178,18 @@ Post invoice and check again invoice totals and taxes::
     >>> credit_note_tax_code.reload()
     >>> credit_note_tax_code.sum
     Decimal('0.00')
+
+Discounts are copyied when crediting the invoice::
+
+    >>> credit = Wizard('account.invoice.credit', [invoice])
+    >>> credit.form.with_refund = True
+    >>> credit.execute('credit')
+    >>> credit_invoice, = credit.actions[0]
+    >>> tuple(l.discount for l in credit_invoice.lines)
+    (Decimal('0.2577'), Decimal('0.12'), Decimal('1.0'))
+    >>> credit_invoice.untaxed_amount
+    Decimal('-106.67')
+    >>> credit_invoice.tax_amount
+    Decimal('-8.80')
+    >>> credit_invoice.total_amount
+    Decimal('-115.47')
