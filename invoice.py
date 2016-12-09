@@ -107,7 +107,7 @@ class InvoiceLine:
         return super(InvoiceLine, cls).create(vlist)
 
     def _credit(self):
-        res = super(InvoiceLine, self)._credit()
+        line = super(InvoiceLine, self)._credit()
         for field in ('gross_unit_price', 'discount'):
-            res[field] = getattr(self, field)
-        return res
+            setattr(line, field, getattr(self, field))
+        return line
