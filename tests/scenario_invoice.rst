@@ -110,16 +110,20 @@ Add line defining Gross Unit Price and Discount (Unit Price is calculated)::
     >>> line.amount
     Decimal('18.67')
 
-Add line defining Unit Price and Discount, Gross Unit Price is calculated::
+A line defining Unit Price sets Gross Unit price::
 
     >>> line = InvoiceLine()
     >>> invoice.lines.append(line)
     >>> line.product = product
     >>> line.quantity = 5
-    >>> line.unit_price = Decimal('17.60')
+    >>> line.unit_price = Decimal('20.0000')
+    >>> line.gross_unit_price
+    Decimal('20.0000')
     >>> line.discount = Decimal('0.12')
     >>> line.gross_unit_price
     Decimal('20.0000')
+    >>> line.unit_price
+    Decimal('17.60000000')
     >>> line.amount
     Decimal('88.00')
 
