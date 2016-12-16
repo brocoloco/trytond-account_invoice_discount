@@ -1,40 +1,41 @@
+import copy
 from decimal import Decimal
+
 from trytond.model import fields
 from trytond.pool import PoolMeta
-from trytond.pyson import Eval
 from trytond.config import config as config_
 from trytond.modules.product import price_digits
 
 __all__ = ['InvoiceLine', 'discount_digits']
 
-STATES = {
-    'invisible': Eval('type') != 'line',
-    'required': Eval('type') == 'line',
-    'readonly': Eval('invoice_state') != 'draft',
-    }
-DEPENDS = ['type', 'invoice_state']
 discount_digits = (16, config_.getint('product', 'discount_decimal',
     default=4))
 
 
-class InvoiceLine:
-    __metaclass__ = PoolMeta
-    __name__ = 'account.invoice.line'
-
+class DiscountMixin(object):
     gross_unit_price = fields.Function(fields.Numeric('Gross Price',
-            digits=price_digits, states=STATES, depends=DEPENDS),
+            digits=price_digits),
         'on_change_with_gross_unit_price', setter='set_gross_unit_price')
     discount = fields.Numeric('Discount', digits=discount_digits,
-        states=STATES, depends=DEPENDS)
+        )
 
     @classmethod
     def __setup__(cls):
-        super(InvoiceLine, cls).__setup__()
+        super(DiscountMixin, cls).__setup__()
+        if set(cls.unit_price.depends) - set(cls.discount.depends):
+            cls.discount.states = copy.deepcopy(cls.unit_price.states)
+            cls.gross_unit_price.states = copy.deepcopy(
+                cls.unit_price.states)
+            cls.discount.depends = copy.deepcopy(cls.unit_price.depends)
+            cls.gross_unit_price.depends = copy.deepcopy(
+                cls.unit_price.depends)
         cls.unit_price.digits = (20, price_digits[1] + discount_digits[1])
-        if 'discount' not in cls.amount.on_change_with:
-            cls.amount.on_change_with.add('discount')
-        if 'gross_unit_price' not in cls.amount.on_change_with:
-            cls.amount.on_change_with.add('gross_unit_price')
+        # Some models may not have the amount field defined
+        if hasattr(cls, 'amount'):
+            if 'discount' not in cls.amount.on_change_with:
+                cls.amount.on_change_with.add('discount')
+            if 'gross_unit_price' not in cls.amount.on_change_with:
+                cls.amount.on_change_with.add('gross_unit_price')
 
     @staticmethod
     def default_discount():
@@ -77,6 +78,11 @@ class InvoiceLine:
     @fields.depends('gross_unit_price', 'discount', 'unit_price')
     def on_change_discount(self):
         self.set_unit_price_from_gross_unit_price(self.gross_unit_price)
+
+
+class InvoiceLine(DiscountMixin):
+    __metaclass__ = PoolMeta
+    __name__ = 'account.invoice.line'
 
     def _credit(self):
         line = super(InvoiceLine, self)._credit()
