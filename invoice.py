@@ -41,7 +41,7 @@ class DiscountMixin(object):
     def default_discount():
         return Decimal(0)
 
-    @fields.depends('gross_unit_price', 'unit_price', 'discount')
+    @fields.depends('unit_price', 'discount')
     def on_change_with_gross_unit_price(self, name=None):
         digits = self.__class__.gross_unit_price.digits[1]
         if self.discount == Decimal(1):
@@ -52,8 +52,7 @@ class DiscountMixin(object):
             gross_unit_price = gross_unit_price.quantize(
                 Decimal(str(10.0 ** -digits)))
             return gross_unit_price
-        # If no discount nor unit price return current_value or unit_price
-        return self.gross_unit_price or self.unit_price
+        return self.unit_price
 
     @classmethod
     def set_gross_unit_price(cls, lines, name, gross_unit_price):
