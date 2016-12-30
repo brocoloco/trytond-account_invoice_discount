@@ -110,20 +110,16 @@ Add line defining Gross Unit Price and Discount (Unit Price is calculated)::
     >>> line.amount
     Decimal('18.67')
 
-A line defining Unit Price sets Gross Unit price::
+Add line defining Unit Price and Discount, Gross Unit Price is calculated::
 
     >>> line = InvoiceLine()
     >>> invoice.lines.append(line)
     >>> line.product = product
     >>> line.quantity = 5
-    >>> line.unit_price = Decimal('20.0000')
-    >>> line.gross_unit_price
-    Decimal('20.0000')
+    >>> line.unit_price = Decimal('17.60')
     >>> line.discount = Decimal('0.12')
     >>> line.gross_unit_price
     Decimal('20.0000')
-    >>> line.unit_price
-    Decimal('17.60000000')
     >>> line.amount
     Decimal('88.00')
 
@@ -197,33 +193,3 @@ Discounts are copyied when crediting the invoice::
     Decimal('-8.80')
     >>> credit_invoice.total_amount
     Decimal('-115.47')
-
-Division by zero is avoided if discount is zero::
-
-    >>> invoice = Invoice()
-    >>> invoice.party = party
-    >>> invoice_line = invoice.lines.new()
-    >>> invoice_line.product = product
-    >>> invoice_line.quantity = 1.0
-    >>> invoice_line.unit_price = Decimal('5')
-    >>> invoice_line.discount = Decimal('1')
-    >>> invoice_line.amount
-    Decimal('0.00')
-    >>> invoice_line.discount = Decimal('0.12')
-    >>> invoice_line.gross_unit_price = Decimal('5')
-    >>> invoice_line.amount
-    Decimal('4.40')
-    >>> invoice_line.quantity = 2.0
-    >>> invoice_line.amount
-    Decimal('8.80')
-    >>> invoice_line = invoice.lines.new()
-    >>> invoice_line.type = 'comment'
-    >>> invoice_line.description = 'Comment'
-    >>> invoice_line = invoice.lines.new()
-    >>> invoice_line.product = product
-    >>> invoice_line.unit_price = Decimal('5')
-    >>> invoice_line.quantity = 3.0
-    >>> invoice_line.amount
-    Decimal('15.00')
-    >>> invoice.untaxed_amount
-    Decimal('23.80')
