@@ -22,7 +22,6 @@
             <field name="model">account.invoice</field>
             <field name="report_name">account.invoice</field>
             <field name="report">account_invoice_discount/invoice.odt</field>
-            <field name="style">company/header_A4.odt</field>
         </record>
     </data>
 </tryton>
