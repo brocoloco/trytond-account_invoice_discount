@@ -33,13 +33,9 @@ class InvoiceLine:
         super(InvoiceLine, cls).__setup__()
         cls.unit_price.states['readonly'] = True
         cls.unit_price.digits = (20, price_digits[1] + discount_digits[1])
-        if 'discount' not in cls.amount.on_change_with:
-            cls.amount.on_change_with.add('discount')
-        if 'gross_unit_price' not in cls.amount.on_change_with:
-            cls.amount.on_change_with.add('gross_unit_price')
 
-    @staticmethod
-    def default_discount():
+    @classmethod
+    def default_discount(cls):
         return Decimal(0)
 
     def update_prices(self):
@@ -77,6 +73,10 @@ class InvoiceLine:
     @fields.depends('gross_unit_price', 'discount', 'unit_price')
     def on_change_discount(self):
         return self.update_prices()
+
+    @fields.depends('discount', 'gross_unit_price')
+    def on_change_with_amount(self):
+        return super(InvoiceLine, self).on_change_with_amount()
 
     @fields.depends('gross_unit_price', 'unit_price', 'discount')
     def on_change_product(self):

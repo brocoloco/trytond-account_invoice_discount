@@ -63,20 +63,16 @@ Create product::
     >>> ProductUom = Model.get('product.uom')
     >>> unit, = ProductUom.find([('name', '=', 'Unit')])
     >>> ProductTemplate = Model.get('product.template')
-    >>> Product = Model.get('product.product')
-    >>> product = Product()
     >>> template = ProductTemplate()
     >>> template.name = 'product'
     >>> template.default_uom = unit
     >>> template.type = 'service'
     >>> template.list_price = Decimal('20')
-    >>> template.cost_price = Decimal('12')
     >>> template.account_expense = expense
     >>> template.account_revenue = revenue
     >>> template.customer_taxes.append(tax)
     >>> template.save()
-    >>> product.template = template
-    >>> product.save()
+    >>> product, = template.products
 
 Create payment term::
 
@@ -179,7 +175,7 @@ Post invoice and check again invoice totals and taxes::
     >>> credit_note_tax_code.sum
     Decimal('0.00')
 
-Discounts are copyied when crediting the invoice::
+Discounts are copied when crediting the invoice::
 
     >>> credit = Wizard('account.invoice.credit', [invoice])
     >>> credit.form.with_refund = True
