@@ -150,7 +150,7 @@ Post invoice and check again invoice totals and taxes::
 
     >>> invoice.click('post')
     >>> invoice.state
-    u'posted'
+    'posted'
     >>> invoice.untaxed_amount
     Decimal('106.67')
     >>> invoice.tax_amount

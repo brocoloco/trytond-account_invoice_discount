@@ -17,8 +17,7 @@ discount_digits = (16, config_.getint('product', 'discount_decimal',
     default=4))
 
 
-class InvoiceLine:
-    __metaclass__ = PoolMeta
+class InvoiceLine(metaclass=PoolMeta):
     __name__ = 'account.invoice.line'
 
     gross_unit_price = fields.Numeric('Gross Price', digits=price_digits,
