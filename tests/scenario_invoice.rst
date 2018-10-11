@@ -222,7 +222,16 @@ after set the Discount the Unit Price is recomputed to 0.::
     Decimal('20.00000000')
     >>> line.gross_unit_price = Decimal('25.153')
     >>> line.discount = Decimal('1.0')
-    >>> line.unit_price == Decimal('0.0')
+    >>> line.unit_price == Decimal(0)
+    True
+    >>> invoice.save()
+    >>> line = invoice.lines.pop()
+    >>> invoice.lines.append(line)
+    >>> line.gross_unit_price == Decimal('25.153')
+    True
+    >>> line.discount
+    Decimal('1.0')
+    >>> line.unit_price == Decimal(0)
     True
 
 Check invoice totals::
@@ -233,7 +242,6 @@ Check invoice totals::
     True
     >>> invoice.total_amount == Decimal('115.47')
     True
-    >>> invoice.save()
 
 Post invoice and check again invoice totals and taxes::
 
