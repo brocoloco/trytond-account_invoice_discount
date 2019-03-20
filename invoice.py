@@ -107,7 +107,8 @@ class InvoiceLine(metaclass=PoolMeta):
                 vals['gross_unit_price'] = gross_unit_price
 
             digits = cls.gross_unit_price.digits[1]
-            vals['gross_unit_price'] = vals['gross_unit_price'].quantize(
+            vals['gross_unit_price'] = Decimal(
+                vals['gross_unit_price']).quantize(
                 Decimal(str(10.0 ** -digits)))
 
             if not vals.get('discount'):
