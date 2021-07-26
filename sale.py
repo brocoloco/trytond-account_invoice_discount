@@ -1,5 +1,5 @@
-from trytond.pool import PoolMeta
 from trytond.model import fields
+from trytond.pool import PoolMeta
 
 
 class Line(metaclass=PoolMeta):
