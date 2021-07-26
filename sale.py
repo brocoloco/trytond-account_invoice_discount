@@ -1,4 +1,5 @@
 from trytond.pool import PoolMeta
+from trytond.model import fields
 
 
 class Line(metaclass=PoolMeta):
@@ -15,3 +16,8 @@ class Line(metaclass=PoolMeta):
             line.gross_unit_price = self.base_price
             line.discount = self.discount_rate
         return lines
+
+    @fields.depends(methods=['compute_unit_price'])
+    def compute_base_price(self):
+        value = self.compute_unit_price()
+        return value
