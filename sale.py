@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from trytond.model import fields
 from trytond.pool import PoolMeta
 
@@ -14,7 +16,10 @@ class Line(metaclass=PoolMeta):
         if lines:
             line = lines[0]
             line.gross_unit_price = self.base_price
-            line.discount = self.discount_rate
+            if self.discount_rate:
+                line.discount = self.discount_rate
+            else:
+                line.discount = Decimal(0)
         return lines
 
     @fields.depends(methods=['compute_unit_price'])
